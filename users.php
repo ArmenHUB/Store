@@ -25,7 +25,7 @@ require_once "errors.php";
          case "modules":
              $user_id = 1;
              $token='erfdf454fgf';
-             $answer = moduleList($user_id,$token);
+             $answer = moduleList($user_id);
 //            if (gettype($result) == 'integer') { // return error number
 //                 $answer = ["token" => T_ERROR, "user_id" => 0, "error" => $result, "lang_id" => $income_data->lang_id, "info" => []];
 //             } else {
@@ -45,7 +45,7 @@ require_once "errors.php";
          case "user_info":
              $user_id = 1;
              $token='erfdf454fgf';
-             $answer = userInfo($user_id,$token);
+             $answer = userInfo($user_id);
 //            $answer = [
 //                "user_id" => 1,
 //                "user_photo" => "images/logo2.png",
@@ -195,18 +195,39 @@ require_once "errors.php";
                  "responseText" => "Import ok"
              ];
              break;
+         case "logout":
+              $result = logout($income_data->user_id);
+             if ($result == 0) { // correctly logout
+                 $answer = ["token" => T_LOGOUT, "user_id" => $income_data->user_id, "error" => 0, "lang_id" => $income_data->lang_id, "info" => []];
+             } else { // returned error number
+                 $answer = ["token" => T_ERROR, "user_id" => $income_data->user_id, "error" => $result, "lang_id" => $income_data->lang_id, "info" => []];
+             }
+             break;
      }
  }
  if ($answer['error'] > 0) {
      $answer['error'] = getError($answer['error'], $income_data->lang_id);
  }
- //echo json_encode($answer);
+ echo json_encode($answer);
 
-// /**
-//  * @param $user_id
-//  * @param $token
-//  * @return bool
-//  */
+ /**
+  * @param $user_id
+  * @return int
+  */
+function logout($user_id)
+{
+    $con = new Z_MySQL();
+    if ($con->queryDML("DELETE FROM `loggedUsers` WHERE `loggedUsers`.`userID` = {$user_id}")) {
+        return 0;
+    }
+    return 7;
+}
+
+ /**
+  * @param $user_id
+  * @param $token
+  * @return bool
+  */
 function checkUser($user_id, $token)
 {
     $con = new Z_MySQL();
@@ -253,7 +274,7 @@ function login($username, $password)
     $data = $con->queryNoDML("SELECT * FROM `users` WHERE `username` = '{$username}' AND `password` = '{$password}'")[0];
     if ((int)$data["userID"] > 0) {
         $user_id = (int)$data["userID"];
-        $usertype = (int)$data["userTypeID"];
+        //$usertype = (int)$data["userTypeID"];
         $token = createToken();
         $cur_time = $con->queryNoDML("SELECT CURRENT_TIMESTAMP() AS 'time'")[0]["time"];
         $data1 = $con->queryNoDML("SELECT * FROM `loggedUsers` WHERE `userID` = '{$user_id}'");
@@ -269,7 +290,7 @@ function login($username, $password)
         }
         else{
             if ($con->queryDML("INSERT INTO `loggedUsers`(`userID`, `lastAction`, `token`) VALUES ('{$user_id}', '$cur_time', '$token')")) {
-                return ["token" => $token, "user_id" => $user_id, "user_type_id" => $usertype];
+               //m return ["token" => $token, "user_id" => $user_id, "user_type_id" => $usertype];
             } else {
                 return 5;
             }

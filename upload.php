@@ -1,5 +1,5 @@
 <?php
-$validextensions = array("csv", "svg");
+    $validextensions = array("csv", "svg");
 $temporary = explode(".", $_FILES["fileToUpload"]["name"]);
 $file_extension = end($temporary);
 

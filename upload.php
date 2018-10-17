@@ -48,10 +48,10 @@ if ($_FILES[$key]["size"] < 100000 && in_array($file_extension, $validextensions
               fclose($handle);
            }
            //print_r($array);
-           foreach ($array as $key => $value) {
-               $name = $value['Name'];
-               $type = $value['Type'];
-               $age = $value['age'];
+           foreach ($array as $key => $value1) {
+               $name = $value1['Name'];
+               $type = $value1['Type'];
+               $age = $value1['age'];
                $sql = "INSERT INTO `users` (`Name`,`Type`,`age`) VALUES ('$name', '$type','$age')";
                $conn->query($sql);
            }

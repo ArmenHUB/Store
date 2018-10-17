@@ -50,13 +50,7 @@ if ($_FILES["fileToUpload"]["size"] < 100000 && in_array($file_extension, $valid
                 $name = $value['Name'];
                 $type = $value['Type'];
                 $age = $value['age'];
-                $vbt = $value['VBT'];
-                $tbv = $value['TBV'];
-                $ttt = $value['TTT'];
-                $qrt = $value['QRT'];
-                $vvv = $value['VVV'];
-                $fffff = $value['FFFFF'];
-                $sql = "INSERT INTO `users` (`Name`,`Type`,`age`,`VBT`,`TBV`,`TTT`,`QRT`,`VVV`,`FFFFF`) VALUES ('$name', '$type','$age','$vbt','$tbv','$ttt','$qrt','$vvv','$fffff')";
+                $sql = "INSERT INTO `users` (`Name`,`Type`,`age`) VALUES ('$name', '$type','$age')";
                 $conn->query($sql);
             }
 

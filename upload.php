@@ -20,7 +20,7 @@ if ($_FILES[$key]["size"] < 100000 && in_array($file_extension, $validextensions
    else
    {
        if (file_exists("upload/" . $_FILES[$key]["name"])) {
-           echo $_FILES["fileToUpload"]["name"] . " <span id='invalid'><b>already exists.</b></span> ";
+           echo $_FILES[$key]["name"] . " <span id='invalid'><b>already exists.</b></span> ";
        }
        else
        {

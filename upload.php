@@ -1,4 +1,11 @@
 <?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "df";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 $validextensions = array("csv", "svg");
 $temporary = explode(".", $_FILES["fileToUpload"]["name"]);
 $file_extension = end($temporary);
@@ -12,8 +19,6 @@ if ($_FILES["fileToUpload"]["size"] < 100000 && in_array($file_extension, $valid
     {
         if (file_exists("upload/" . $_FILES["fileToUpload"]["name"])) {
             echo $_FILES["fileToUpload"]["name"] . " <span id='invalid'><b>already exists.</b></span> ";
-
-
         }
         else
         {
@@ -40,10 +45,20 @@ if ($_FILES["fileToUpload"]["size"] < 100000 && in_array($file_extension, $valid
                }
                fclose($handle);
             }
-            print_r($array);
-            // foreach ($array as $key => $value) {
-            //   echo $value['Name']."|".$value['Type']."|".$value['age'];
-            // }
+            //print_r($array);
+            foreach ($array as $key => $value) {
+                $name = $value['Name'];
+                $type = $value['Type'];
+                $age = $value['age'];
+                $sql = "INSERT INTO `users` (`Name`,`Type`,`age`)
+VALUES ('$name', '$type','$age')";
+                if ($conn->query($sql) === TRUE) {
+                    echo "New record created successfully";
+                } else {
+                    echo "Error: " . $sql . "<br>" . $conn->error;
+                }
+
+            }
         }
     }
 }

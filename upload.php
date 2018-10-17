@@ -12,6 +12,8 @@ if ($_FILES["fileToUpload"]["size"] < 100000 && in_array($file_extension, $valid
     {
         if (file_exists("upload/" . $_FILES["fileToUpload"]["name"])) {
             echo $_FILES["fileToUpload"]["name"] . " <span id='invalid'><b>already exists.</b></span> ";
+
+
         }
         else
         {
@@ -19,22 +21,29 @@ if ($_FILES["fileToUpload"]["size"] < 100000 && in_array($file_extension, $valid
             $targetPath = "upload/".$_FILES['fileToUpload']['name']; // Target path where file is to be stored
             move_uploaded_file($sourcePath,$targetPath) ; // Moving Uploaded file
             $file = "upload/".$_FILES['fileToUpload']['name'];
+            $array = $fields = array();
+            $i = 0;
             $handle = fopen($file, "r");
-            while(($filesop = fgetcsv($handle, 1000, ",")) !== false)
-            {
-                $name = $filesop[0];
-                $type = $filesop[1];
-                $age = $filesop[2];
-                 if($c > 0){
-                   echo $name;
-                   echo "</br>";
-                   echo $type;
-                   echo "</br>";
-                   echo $age;
-                   echo "</br>";
+            if ($handle) {
+               while (($row = fgetcsv($handle, 4096)) !== false) {
+                 if (empty($fields)) {
+                   $fields = $row;
+                    continue;
+                 } 
+                 foreach ($row as $k=>$value) {
+                    $array[$i][$fields[$k]] = $value;
                  }
-                 $c++;
+                  $i++;
+               }
+               if (!feof($handle)) {
+                 echo "Error: unexpected fgets() fail\n";
+               }
+               fclose($handle);
             }
+            print_r($array);
+            // foreach ($array as $key => $value) {
+            //   echo $value['Name']."|".$value['Type']."|".$value['age'];
+            // }
         }
     }
 }
